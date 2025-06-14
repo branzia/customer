@@ -1,0 +1,34 @@
+{
+    "name": "branzia/customer",
+    "description": "Branzia Customer Package for Laravel",
+    "type": "library",
+    "license": "MIT",
+    "require": {
+        "php": "^8.2",
+        "branzia/tax": "@dev"      
+    },
+    "autoload": {
+        "psr-4": {
+            "Branzia\\Customer\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Visvanathan",
+            "email": "visvanathan.tech@gmail.com"
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Branzia\\Customer\\CustomerServiceProvider"
+            ],
+            "aliases": {}
+        }
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
