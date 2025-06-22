@@ -14,14 +14,16 @@ return new class extends Migration
         Schema::create('customers', function (Blueprint $table) {
             $table->id();
             $table->foreignId('customer_group_id')->nullable()->constrained('customer_groups')->nullOnDelete()->default(1);
+            $table->string('prefix',5)->nullable();
             $table->string('first_name');
             $table->string('last_name');
+            $table->string('suffix',5)->nullable();
             $table->string('email')->unique();
             $table->string('password');
-            $table->foreignId('default_billing_address_id')->nullable()->constrained('customer_addresses')->nullOnDelete();
-            $table->foreignId('default_shipping_address_id')->nullable()->constrained('customer_addresses')->nullOnDelete();
+            $table->date('date_of_birth')->nullable();
+            $table->enum('gender', ['male', 'female', 'not_specified'])->nullable();
+            $table->string('tax')->nullable();
             $table->timestamps();
-            
         });
     }
 
