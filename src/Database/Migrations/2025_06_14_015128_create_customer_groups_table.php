@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('customer_groups', function (Blueprint $table) {
             $table->id();
             $table->string('code'); // e.g., General, Wholesale
-            $table->foreignId('tax_class_id')->nullable()->constrained('tax_classes')->nullOnDelete(); 
             $table->timestamps();
         });
     }

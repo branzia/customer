@@ -17,6 +17,7 @@ class CustomerServiceProvider extends BranziaServiceProvider implements Provides
     public function boot():void
     {
         parent::boot();
+
     }
 
     public function register(): void

@@ -9,7 +9,6 @@ class CustomerGroup extends Model
 {
     protected $fillable = [
         'code',
-        'tax_class_id',
     ];
 
     public function customers()
@@ -17,8 +16,4 @@ class CustomerGroup extends Model
         return $this->hasMany(Customer::class);
     }
 
-    public function taxClass()
-    {
-        return $this->belongsTo(TaxClass::class,'tax_class_id');
-    }
 }

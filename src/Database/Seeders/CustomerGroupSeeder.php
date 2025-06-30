@@ -14,15 +14,14 @@ class CustomerGroupSeeder extends Seeder
     public function run(): void
     {
         $defaultClasses = [
-            ['code' => 'NOT LOGGED IN', 'tax_class_id' => '9'],
-            ['code' => 'General', 'tax_class_id' => '9'],
-            ['code' => 'Wholesale', 'tax_class_id' => '9'],
-            ['code' => 'Retailer', 'tax_class_id' => '9'],
+            ['code' => 'NOT LOGGED IN'],
+            ['code' => 'General'],
+            ['code' => 'Wholesale'],
+            ['code' => 'Retailer'],
         ];
         foreach ($defaultClasses as $class) {
             CustomerGroup::firstOrCreate(
                 ['code' => $class['code']],
-                ['tax_class_id' => $class['tax_class_id']]
             );
         }
     }

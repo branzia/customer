@@ -7,6 +7,7 @@ use Filament\Tables;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Filament\Resources\Resource;
+use Filament\Resources\Pages\Page;
 use Filament\Forms\Components\Grid;
 use Branzia\Customer\Models\Customer;
 use Filament\Forms\Components\Select;
@@ -18,11 +19,12 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
 use Filament\Tables\Columns\BadgeColumn;
 use Filament\Forms\Components\DatePicker;
+use Filament\Pages\SubNavigationPosition;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Filament\Pages\SubNavigationPosition;
+use Branzia\Bootstrap\Resource\ResourcePageExtensionManager;
+use Branzia\Bootstrap\Resource\ResourceNavigationItemsManager;
 use Branzia\Customer\Filament\Resources\CustomerResource\Pages;
-use Filament\Resources\Pages\Page;
 
 
 class CustomerResource extends Resource
@@ -35,7 +37,7 @@ class CustomerResource extends Resource
 
     public static function form(Form $form): Form
     {
-        return $form->schema([
+        $baseSchema = [
             Section::make('Basic Information')->schema([
                 Select::make('customer_group_id')->relationship(
                     name: 'group',
@@ -49,15 +51,32 @@ class CustomerResource extends Resource
                     TextInput::make('suffix')->label('Name Suffix')->maxLength(10)->placeholder('Jr, Sr')->columnSpan(1),
                 ])->columns(4),
                 TextInput::make('email')->email()->required()->unique(ignoreRecord: true),
+                TextInput::make('tax')->label('Tax')->nullable(),
                 DatePicker::make('date_of_birth')->label('Date of Birth')->nullable(),
-                TextInput::make('tax')->label('Tax ID')->nullable(),
+                
                 Select::make('gender')->label('Gender')->options(['male' => 'Male','female' => 'Female','not_specified' => 'Not Specified'])->nullable(),
             ]),
             Section::make('Password Information')->schema([
-                TextInput::make('password')->password()->required(fn (string $context) => $context === 'create')->dehydrateStateUsing(fn ($state) => filled($state) ? bcrypt($state) : null)->label('Password')->revealable()->same('passwordConfirmation'),
-                TextInput::make('passwordConfirmation')->password()->label('Confirm Password')->required(fn (string $context) => $context === 'create')->dehydrated(false)->revealable(),
+                TextInput::make('password')
+                    ->password()
+                    ->label('Password')
+                    ->revealable()
+                    ->same('passwordConfirmation')
+                    ->required(fn (string $context) => $context === 'create')
+                    ->dehydrateStateUsing(fn ($state) => filled($state) ? bcrypt($state) : null)
+                    ->dehydrated(fn ($state) => filled($state)), // ✅ This prevents null value from being saved
+                TextInput::make('passwordConfirmation')
+                    ->password()
+                    ->label('Confirm Password')
+                    ->required(fn (string $context) => $context === 'create')
+                    ->dehydrated(false)
+                    ->revealable(),
             ])->columns(2),
-        ]);
+
+        ];
+        return $form->schema(
+            Form::withAdditionalField($baseSchema, static::class)
+        );
     }
 
     public static function table(Table $table): Table
@@ -96,19 +115,20 @@ class CustomerResource extends Resource
     }
     public static function getRecordSubNavigation(Page $page): array
     {
-        return $page->generateNavigationItems([
+        $navigationItems = ResourceNavigationItemsManager::apply([
             Pages\EditCustomer::class,
             Pages\CustomerAddress::class,
-        ]);
+        ], static::class);
+        return $page->generateNavigationItems($navigationItems);
     }    
 
     public static function getPages(): array
     {
-        return [
+        return ResourcePageExtensionManager::apply([
             'index' => Pages\ListCustomers::route('/'),
             'create' => Pages\CreateCustomer::route('/create'),
             'edit' => Pages\EditCustomer::route('/{record}/edit'),
-            'address' => Pages\CustomerAddress::route('/{record}/address')
-        ];
+            'address' => Pages\CustomerAddress::route('/{record}/address'),
+        ], static::class);
     }
 }
