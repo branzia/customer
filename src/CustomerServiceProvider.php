@@ -24,22 +24,5 @@ class CustomerServiceProvider extends BranziaServiceProvider implements Provides
     {
         parent::register();
     }
-    public static function filamentDiscoveryPaths(): array
-    {
-        return [
-            'resources' => [
-                ['path' => __DIR__.'/Filament/Resources', 'namespace' => 'Branzia\\Customer\\Filament\\Resources'],
-            ],
-            'pages' => [
-                ['path' => __DIR__.'/Filament/Pages', 'namespace' => 'Branzia\\Customer\\Filament\\Pages'],
-            ],
-            'clusters' => [
-                ['path' => __DIR__.'/Filament/Clusters', 'namespace' => 'Branzia\\Customer\\Filament\\Clusters'],
-            ],
-            'widgets' => [
-                ['path' => __DIR__.'/Filament/Widgets', 'namespace' => 'Branzia\\Customer\\Filament\\Widgets'],
-            ],
-        ];
-    }
 }
 
